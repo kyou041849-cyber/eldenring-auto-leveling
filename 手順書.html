@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>エルデンリング 自動レベリング 手順書</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --text: #1f2933;
+      --muted: #607080;
+      --line: #d8dee6;
+      --accent: #1f6feb;
+      --accent-soft: #e7f0ff;
+      --warn: #8a4b00;
+      --warn-bg: #fff5df;
+      --ok: #0b6b3a;
+      --ok-bg: #e8f7ef;
+      --code: #f0f3f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+
+    header {
+      background: #111827;
+      color: #ffffff;
+      padding: 28px 24px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    header p {
+      margin: 0;
+      color: #d1d5db;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      margin: 0 0 18px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 17px;
+    }
+
+    p {
+      margin: 8px 0;
+    }
+
+    ol,
+    ul {
+      padding-left: 1.4em;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    code,
+    .path {
+      background: var(--code);
+      border: 1px solid #d9e0e8;
+      border-radius: 5px;
+      padding: 2px 6px;
+      font-family: Consolas, "Yu Gothic UI", monospace;
+      word-break: break-all;
+    }
+
+    pre {
+      background: #111827;
+      color: #f9fafb;
+      border-radius: 8px;
+      padding: 14px;
+      overflow: auto;
+      line-height: 1.55;
+    }
+
+    pre code {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      color: inherit;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 10px;
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    th {
+      background: #f0f3f7;
+      text-align: left;
+    }
+
+    .note {
+      background: var(--accent-soft);
+      border-left: 5px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 12px 0;
+    }
+
+    .warning {
+      background: var(--warn-bg);
+      border-left: 5px solid var(--warn);
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 12px 0;
+    }
+
+    .ok {
+      background: var(--ok-bg);
+      border-left: 5px solid var(--ok);
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 12px 0;
+    }
+
+    .flow {
+      font-weight: 700;
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    img {
+      max-width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      header,
+      main,
+      section {
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      section {
+        border: 0;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>エルデンリング 自動レベリング 手順書</h1>
+    <p>chiaki-ng と仮想DS4コントローラーで、参考元XMLの操作をPS5へ送るための手順です。</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>1. この手順書の対象</h2>
+      <p>この手順書は、公開ZIPを任意のフォルダへ展開し、必要な外部ソフトを準備してから使う前提です。</p>
+      <p class="path">%USERPROFILE%\Documents\日常の困りごと\エルデンリング_自動レベリング</p>
+
+      <div class="ok">
+        <p><strong>最初に大事な前提</strong></p>
+        <ul>
+          <li>この仕組みは <strong>自分のPS5をリモートプレイで操作</strong> します。</li>
+          <li>公式のPS Remote Playアプリではなく、<strong>chiaki-ng</strong> を使います。</li>
+          <li>入力の流れは <strong>PCの仮想DS4 -> chiaki-ng -> PS5</strong> です。</li>
+          <li>PS5の画面がchiaki-ngに映っていない状態では、マクロ入力はPS5へ届きません。</li>
+          <li>公開ZIPにはPythonの仮想環境、chiaki-ng、ViGEmBus、参考元XMLは含まれません。READMEの初回準備を先に行ってください。</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <p><strong>現在の完成版の操作フロー</strong></p>
+        <p class="flow">XML再生 -> 黄金波1回目 -> XML後半の移動/待機 -> 黄金波2回目 -> タッチパッド -> 三角 -> × -> × -> 即ニュートラル復帰 -> ニュートラル状態を3秒維持 -> 次ループ</p>
+      </div>
+
+      <p>最後の3秒は、XMLの残り入力を再生せず、コントローラーを完全ニュートラルにしたまま待ちます。これにより、停止後に上方向入力が残る問題を避けます。</p>
+    </section>
+
+    <section>
+      <h2>2. 使うファイル</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ファイル</th>
+            <th>用途</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>start_chiaki.cmd</code></td>
+            <td>chiaki-ngを起動します。</td>
+          </tr>
+          <tr>
+            <td><code>check_virtual_gamepad.cmd</code></td>
+            <td>仮想コントローラーがWindowsに出るか確認します。初回確認用です。</td>
+          </tr>
+          <tr>
+            <td><code>dry_run_macro.cmd</code></td>
+            <td>PS5へ入力を送らず、マクロ内容だけ表示します。</td>
+          </tr>
+          <tr>
+            <td><code>test_one_loop.cmd</code></td>
+            <td>1ループだけ実行します。初回テスト用です。</td>
+          </tr>
+          <tr>
+            <td><code>loop_xml_prefix_touch_grace_until_stop.cmd</code></td>
+            <td>止めるまでループ実行します。通常運用で使います。</td>
+          </tr>
+          <tr>
+            <td><code>start_macro.cmd</code></td>
+            <td>止めるまでループ実行する別入口です。引数を追加したい時に使います。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="small">実際の処理本体は <code>macro\replay_ps4macro_xml.py</code> です。通常は直接触る必要はありません。</p>
+    </section>
+
+    <section>
+      <h2>3. 初回だけ確認すること</h2>
+
+      <h3>3.1 PS5側の設定</h3>
+      <ol>
+        <li>PS5で <strong>設定 -> システム -> リモートプレイ</strong> を開きます。</li>
+        <li><strong>リモートプレイを有効にする</strong> をオンにします。</li>
+        <li>レストモードから起動したい場合は、<strong>設定 -> システム -> 省電力 -> レストモード中に使う機能</strong> で、ネットワーク関連の項目を有効にします。</li>
+      </ol>
+
+      <h3>3.2 chiaki-ngの登録</h3>
+      <ol>
+        <li><code>start_chiaki.cmd</code> をダブルクリックします。</li>
+        <li>chiaki-ngにPS5が表示されていれば、PS5を選んで接続します。</li>
+        <li>未登録の場合は、PS5側で <strong>設定 -> システム -> リモートプレイ -> 機器をリンク</strong> を開き、8桁のPINを表示します。</li>
+        <li>chiaki-ngの登録画面で、HostにはPS5のIPアドレスを入れます。例として <code>192.168.x.x</code> の形式で入力します。</li>
+        <li>PSN Account-IDは、chiaki-ngの <strong>PSN Login</strong> または <strong>Public Lookup</strong> で取得します。</li>
+        <li>Remote Play PINにはPS5に表示された8桁のPINを入れます。</li>
+        <li>Console Pinは空欄で構いません。</li>
+      </ol>
+
+      <table>
+        <thead>
+          <tr>
+            <th>登録画面の欄</th>
+            <th>入力するもの</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Host</td>
+            <td>PS5のIPアドレス。例: <code>192.168.x.x</code></td>
+          </tr>
+          <tr>
+            <td>PSN Account-ID</td>
+            <td>PSN LoginまたはPublic Lookupで取得されるID。PSNのオンラインIDをそのまま入れる欄ではありません。</td>
+          </tr>
+          <tr>
+            <td>Remote Play PIN</td>
+            <td>PS5の「機器をリンク」に表示される8桁のPIN。</td>
+          </tr>
+          <tr>
+            <td>Console Pin</td>
+            <td>空欄でOK。</td>
+          </tr>
+          <tr>
+            <td>Console</td>
+            <td><strong>PS5</strong> を選択。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="warning">
+        <p><strong>PSN Login後にredirect画面になった場合</strong></p>
+        <p>失敗ではありません。ブラウザのアドレスバーに出ているURLを丸ごとコピーし、chiaki-ng側のRedirect URL欄に貼り付けてください。貼り付け後にPSN Account-IDが埋まれば次へ進めます。</p>
+      </div>
+
+      <h3>3.3 仮想コントローラーの確認</h3>
+      <ol>
+        <li><code>check_virtual_gamepad.cmd</code> をダブルクリックします。</li>
+        <li>Windowsのゲームコントローラー画面が開きます。</li>
+        <li>仮想コントローラーが表示されれば準備OKです。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>4. エルデンリング側の準備</h2>
+      <ol>
+        <li>エルデンリングは <strong>オフライン</strong> で起動します。</li>
+        <li>祝福 <strong>王朝に至る崖路</strong> へ移動します。</li>
+        <li><strong>神の遺剣</strong> を装備し、L2で <strong>黄金波</strong> が出る状態にします。</li>
+        <li>エルデンリング側の <strong>カメラ感度を5</strong> に設定します。</li>
+        <li>初期位置を合わせます。目安画像がある場合は下の画像を参考にします。</li>
+      </ol>
+
+      <p><img src="images/initial_position_guide.png" alt="初期位置の目安画像"></p>
+
+      <div class="note">
+        <p><strong>初期位置の見方</strong></p>
+        <p>崖・落下側が画面左、祝福が画面右に見える向きにします。黄金波はしろがね人の群れへ飛ぶように、画像の矢印方向へ向けます。</p>
+      </div>
+
+      <div class="warning">
+        <p><strong>角度が合わない時</strong></p>
+        <p>マクロ側のスティック倍率は現在補正なしです。カメラ感度は <strong>5</strong> が適正です。まだ角度がずれる場合は、初期位置と向きを先に合わせてください。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. 実行手順</h2>
+
+      <h3>5.1 chiaki-ngを起動する</h3>
+      <ol>
+        <li><code>start_chiaki.cmd</code> をダブルクリックします。</li>
+        <li>chiaki-ngでPS5へ接続します。</li>
+        <li>chiaki-ng画面にPS5の映像が出ていることを確認します。</li>
+      </ol>
+      <p class="small">黒いcmd画面が閉じても、chiaki-ngのウィンドウが起動していれば正常です。chiaki-ngのウィンドウ自体が出ない場合は、トラブルの「chiaki-ngが起動しない」を見てください。</p>
+
+      <h3>5.2 まずdry-runで確認する</h3>
+      <ol>
+        <li><code>dry_run_macro.cmd</code> をダブルクリックします。</li>
+        <li>黒い画面に操作内容が表示されます。</li>
+        <li>この時点ではPS5へ入力は送られません。</li>
+      </ol>
+
+      <p>正常なら、次のような内容が表示されます。</p>
+      <pre><code>Loaded 4947 states
+Duration: 19.800s
+Controller mode: virtual DS4
+Tail trim: replay stops at last Cross release 19.800s, then neutral wait 3.0s</code></pre>
+
+      <h3>5.3 1回だけテストする</h3>
+      <ol>
+        <li>エルデンリングを初期位置に置きます。</li>
+        <li><code>test_one_loop.cmd</code> をダブルクリックします。</li>
+        <li>1ループだけ実行されます。</li>
+        <li>黄金波、地図操作、祝福移動、次ループ可能な位置への復帰を確認します。</li>
+      </ol>
+      <p class="small">1回テストで黄金波の方向、タッチパッド、三角、×のどれかが失敗する場合は、無限ループへ進まず先に直します。</p>
+
+      <h3>5.4 止めるまでループする</h3>
+      <ol>
+        <li><code>loop_xml_prefix_touch_grace_until_stop.cmd</code> をダブルクリックします。</li>
+        <li>黒い画面に <code>Mode: full reference XML replay.</code> と表示されます。</li>
+        <li>止めるまでループ実行されます。</li>
+      </ol>
+
+      <div class="ok">
+        <p><strong>停止方法</strong></p>
+        <p>黒い画面を選択して <strong>Ctrl+C</strong> を押します。Ctrl+C後は仮想コントローラーをニュートラル状態で3秒維持してから終了します。Windowsから確認された場合は <strong>Y</strong> を押してEnterです。</p>
+        <p><strong>右上の×ボタンでcmdを閉じないでください。</strong> ×で閉じると、ニュートラル3秒維持の終了処理が走らない可能性があります。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. よくあるトラブル</h2>
+
+      <h3>6.1 停止後も上方向に動き続ける</h3>
+      <p>原因は、chiaki-ngやWindows側が最後のスティック解除を取りこぼした可能性です。現在のマクロは最後にニュートラルを送るよう修正済みですが、起きた場合は次を試します。</p>
+      <ol>
+        <li>物理コントローラーの左スティックを一度動かして離します。</li>
+        <li>chiaki-ngの接続を一度切り、再接続します。</li>
+        <li>マクロ実行中にWindowsキーでフォーカスを外さないようにします。</li>
+      </ol>
+
+      <h3>6.2 黄金波の角度がずれる</h3>
+      <p>参考元XMLは作者環境のカメラ感度に依存しています。現在のマクロ側はスティック補正なしで、エルデンリング側のカメラ感度は <strong>5</strong> が適正です。ずれる場合は初期位置と向きを合わせ直してください。</p>
+
+      <h3>6.3 タッチパッドや×が反応しない</h3>
+      <p>chiaki-ngが仮想DS4を認識していない可能性があります。chiaki-ngを再起動し、PS5へ再接続してからもう一度試してください。</p>
+      <table>
+        <tbody>
+          <tr>
+            <th>マクロ表記</th>
+            <th>PS5側の意味</th>
+          </tr>
+          <tr>
+            <td>Cross / ×</td>
+            <td>決定キー。この環境ではPS5側の決定は×です。</td>
+          </tr>
+          <tr>
+            <td>Triangle / 三角</td>
+            <td>祝福に触れる入力。</td>
+          </tr>
+          <tr>
+            <td>TouchButton / タッチパッド</td>
+            <td>地図を開く入力。</td>
+          </tr>
+          <tr>
+            <td>L2</td>
+            <td>神の遺剣の戦技「黄金波」。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6.4 chiaki-ngが起動しない</h3>
+      <p><code>start_chiaki.cmd</code> は、chiaki-ngをASCIIパスから起動するようになっています。次のパスにchiaki.exeがあるか確認してください。</p>
+      <p class="path">%LOCALAPPDATA%\eldenring_auto_leveling\chiaki-ng\chiaki-ng-Win\chiaki.exe</p>
+
+      <h3>6.5 dry-runでXMLファイルが見つからない</h3>
+      <p>現在の設定では、入力元XMLは次の場所を使います。</p>
+      <p class="path">%USERPROFILE%\Downloads\eldenring.xml</p>
+      <p>このファイルを移動・削除した場合は、同じ場所に戻してから実行してください。</p>
+    </section>
+
+    <section>
+      <h2>7. 現在のマクロ仕様</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>コントローラー方式</th>
+            <td>仮想DS4</td>
+          </tr>
+          <tr>
+            <th>入力元XML</th>
+            <td><code>%USERPROFILE%\Downloads\eldenring.xml</code></td>
+          </tr>
+          <tr>
+            <th>再生範囲</th>
+            <td>2回目の×を離した時点まで</td>
+          </tr>
+          <tr>
+            <th>末尾待機</th>
+            <td>ニュートラル状態で3秒</td>
+          </tr>
+          <tr>
+            <th>停止方法</th>
+            <td>黒い画面でCtrl+C。ニュートラル状態を3秒維持してから終了</td>
+          </tr>
+          <tr>
+            <th>通常ループ入口</th>
+            <td><code>loop_xml_prefix_touch_grace_until_stop.cmd</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>待機時間を変える場合は、手入力で次のように実行できます。</p>
+      <pre><code>start_xml_macro.cmd --loops 0 --after-last-cross-neutral-wait 4.0</code></pre>
+      <p class="small">上の例は、2回目の×の後にニュートラル状態で4秒待つ設定です。</p>
+    </section>
+  </main>
+</body>
+</html>

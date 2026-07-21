@@ -215,8 +215,7 @@
   <main>
     <section>
       <h2>1. この手順書の対象</h2>
-      <p>この手順書は、公開ZIPを任意のフォルダへ展開し、必要な外部ソフトを準備してから使う前提です。</p>
-      <p class="path">%USERPROFILE%\Documents\日常の困りごと\エルデンリング_自動レベリング</p>
+      <p>この手順書は、公開ZIPを任意のフォルダへ展開し、リンク先から必要なものを順番に準備して使う手順です。</p>
 
       <div class="ok">
         <p><strong>最初に大事な前提</strong></p>
@@ -225,7 +224,7 @@
           <li>公式のPS Remote Playアプリではなく、<strong>chiaki-ng</strong> を使います。</li>
           <li>入力の流れは <strong>PCの仮想DS4 -> chiaki-ng -> PS5</strong> です。</li>
           <li>PS5の画面がchiaki-ngに映っていない状態では、マクロ入力はPS5へ届きません。</li>
-          <li>公開ZIPにはPythonの仮想環境、chiaki-ng、ViGEmBus、参考元XMLは含まれません。READMEの初回準備を先に行ってください。</li>
+          <li>外部ソフトと参考元XMLは、このページのリンクから取得して配置します。</li>
         </ul>
       </div>
 
@@ -235,6 +234,43 @@
       </div>
 
       <p>最後の3秒は、XMLの残り入力を再生せず、コントローラーを完全ニュートラルにしたまま待ちます。これにより、停止後に上方向入力が残る問題を避けます。</p>
+
+      <h3>1.1 最初に準備するもの</h3>
+      <p>次の順番で進めてください。ダウンロードしただけでは完了ではなく、各項目の配置先または確認方法まで行います。</p>
+      <ol>
+        <li>
+          <strong>Python 3.12.x</strong> を <a href="https://www.python.org/downloads/windows/" target="_blank" rel="noopener">Python公式のWindowsダウンロードページ</a> からインストールします。動作保証対象は <strong>Python 3.12.x</strong> です。Python 3.13以降は未検証です。インストール画面の <code>Add python.exe to PATH</code> をオンにし、コマンドプロンプトで <code>py -3.12 --version</code> を実行して確認します。
+        </li>
+        <li>
+          <strong>chiaki-ng</strong> を <a href="https://chiaki-ng.com/" target="_blank" rel="noopener">案内ページ</a> の <a href="https://chiaki-ng.com/download/" target="_blank" rel="noopener">chiaki-ngのWindowsダウンロードページ</a> または <a href="https://github.com/streetpea/chiaki-ng/releases" target="_blank" rel="noopener">上流GitHub Releases</a> から取得します。Windows x64のportable版を展開し、<code>chiaki.exe</code> が次の場所にある状態にします。
+          <p class="path">%LOCALAPPDATA%\eldenring_auto_leveling\chiaki-ng\chiaki-ng-Win\chiaki.exe</p>
+          <p class="small">展開後にフォルダが一段深くなった場合は、<code>chiaki.exe</code> が上のパスの直下に来るように中身を移動します。</p>
+        </li>
+        <li>
+          <strong>ViGEmBus</strong> を <a href="https://vigembus.com/download/" target="_blank" rel="noopener">公式サイトのダウンロードページ</a> または <a href="https://github.com/nefarius/ViGEmBus/releases/latest" target="_blank" rel="noopener">公式GitHub Releases</a> から取得します。公式インストーラーを実行してWindowsへインストールしてください。ViGEmBusは、PythonマクロがDS4仮想コントローラーを作るための第三者製システムドライバーです。マクロのフォルダへコピーするものではなく、Codex製でもないため、公開ZIPには同梱していません。
+        </li>
+        <li>
+          <strong>参考元の <code>eldenring.xml</code></strong> を <a href="https://note.com/psycho_tanshio/n/n03ae7bf7275a" target="_blank" rel="noopener">参考元記事</a> から取得します。ファイル名を <code>eldenring.xml</code> にして、次の場所へ保存してください。
+          <p class="path">%USERPROFILE%\Downloads\eldenring.xml</p>
+          <p>こちらのXMLは参考元記事のものを利用させていただきました。配布いただきありがとうございます。</p>
+        </li>
+      </ol>
+      <div class="warning">
+        <p><strong>chiaki-ngのダウンロード先について</strong></p>
+        <p><code>chiaki-ng.com</code> は独立した案内・ミラーサイトです。上流の配布元を確認したい場合は、同じ項目に掲載している <code>streetpea/chiaki-ng</code> GitHub Releasesを使ってください。</p>
+      </div>
+
+      <h3>1.2 Python環境を初回だけ作る</h3>
+      <ol>
+        <li>公開ZIPを展開したフォルダをエクスプローラーで開きます。</li>
+        <li>アドレスバーに <code>cmd</code> と入力してEnterを押します。</li>
+        <li>開いた黒い画面で、次のコマンドを上から順に実行します。</li>
+      </ol>
+      <pre><code>cd /d "macro"
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install --upgrade pip
+.venv\Scripts\python.exe -m pip install vgamepad</code></pre>
+      <p class="small">この操作で、公開ZIPの中に利用者自身のPython仮想環境 <code>macro\.venv</code> が作られます。作成された環境は公開ZIPには含まれていません。</p>
     </section>
 
     <section>
